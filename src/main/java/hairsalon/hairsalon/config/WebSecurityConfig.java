@@ -38,7 +38,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests()
-                .requestMatchers("/register_user/**", "/register")
+                .requestMatchers("/", "/home", "/register_user/**", "/register")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -50,7 +50,7 @@ public class WebSecurityConfig {
                 .defaultSuccessUrl("/hairsalon", true)
                 .permitAll()
                 .and()
-                .logout().logoutSuccessUrl("/").permitAll();
+                .logout().logoutSuccessUrl("/home").permitAll();
 
         http.authenticationProvider(authenticationProvider());
         http.headers().frameOptions().sameOrigin();

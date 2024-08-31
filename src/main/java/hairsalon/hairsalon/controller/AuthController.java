@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import hairsalon.hairsalon.model.User;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AuthController {
@@ -19,15 +20,17 @@ public class AuthController {
     @Autowired
     UserRepository userRepo;
 
+    private static final String ADMIN_PASSWORD = "sekundkleba123";
+
+    @GetMapping("/")
+    public String redirectToHome() {
+        return "redirect:/home";
+    }
+
     @GetMapping("/login")
     public String showLoginForm(Model model){
         model.addAttribute("user", new User());
         return "login";
-    }
-
-    @GetMapping("/hairsalon")
-    public String home() {
-        return "hairsalon"; // No need to specify .html
     }
 
     @GetMapping("/register")
@@ -38,18 +41,21 @@ public class AuthController {
     }
 
     @PostMapping("/register_user")
-    public String register_user (@Valid User user, BindingResult result, Model model) {
-        // Provjeri je li korisnik postoji u bazi, ako postoji u polje email dodati grešku
+    public String register_user (@Valid User user, BindingResult result, @RequestParam String adminPassword, Model model) {
+        if (!ADMIN_PASSWORD.equals(adminPassword)) {
+            model.addAttribute("user", user);
+            model.addAttribute("success", false);
+            model.addAttribute("errorMessage", "Admin lozinka je pogrešna.");
+            return "register";
+        }
         if (userRepo.findByEmail(user.getEmail()) != null) {
             result.addError(new FieldError("user", "email", "Korisnik je već registriran s ovom email adresom, molimo pokušajte koristiti drugu."));
         }
-        // Provjeri jesu li lozinke odgovarajuće, ako nisu u polje password repeat i password dodati grešku
         if (!user.getPassword().equals(user.getPasswordRepeat())) {
             result.addError(new FieldError("user", "passwordRepeat", "Lozinke se moraju podudarati"));
             result.addError(new FieldError("user", "password", "Lozinke se moraju podudarati"));
         }
 
-        // prikaži greške ukoliko postoje
         boolean errors = result.hasErrors();
         if (errors) {
             model.addAttribute("user", user); // podaci koji su uredu šalju se formi na prikaz
@@ -57,14 +63,17 @@ public class AuthController {
             return "register";
         }
 
-        // enkodiraj lozinku i postavi ulogu guest za nove korisnike
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));
         userRepo.save(user);
 
-        // resetiraj formu i prikaži poruku za uspješnu registraciju
         model.addAttribute("user", new User());
         model.addAttribute("success", true);
         return "register";
+    }
+
+    @GetMapping("/**")
+    public String handleAllUndefinedRoutes() {
+        return "redirect:/home";
     }
 }

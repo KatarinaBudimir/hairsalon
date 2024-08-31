@@ -14,24 +14,24 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(min = 2, max = 50, message = "Polje mora sadržavati barem 2 znaka i manje od 50 znakova.") // Anotator za provjeru duljine unesenog teksta.
+    @Size(min = 2, max = 50, message = "Polje mora sadržavati barem 2 znaka i manje od 50 znakova.")
     @Column(nullable = false, length = 50)
     private String firstname;
 
-    @Size(min = 2, max = 50, message = "Polje mora sadržavati barem 2 znaka i manje od 50 znakova.") // Anotator za provjeru duljine unesenog teksta.
+    @Size(min = 2, max = 50, message = "Polje mora sadržavati barem 2 znaka i manje od 50 znakova.")
     @Column(nullable = false, length = 50)
     private String lastname;
-    @NotBlank(message="Molimo unesite Vašu email adresu.") // polje email mora biti jedinstveno
-    @Email(message = "Unesite ispravnu email adresu.") // polje email mora biti u obliku email adrese
+    @NotBlank(message="Molimo unesite Vašu email adresu.")
+    @Email(message = "Unesite ispravnu email adresu.")
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank(message="Molimo unesite Vašu lozinku.") // polje mora imati vrijednost
+    @NotBlank(message="Molimo unesite Vašu lozinku.")
     @Column(nullable = false)
     private String password;
 
-    @NotBlank(message="Molimo ponovite Vašu lozinku.") // polje mora imati vrijednost
-    @Transient // polje nije zapisano u bazi no potrebno je radi provjere ponovnog unosa.
+    @NotBlank(message="Molimo ponovite Vašu lozinku.")
+    @Transient
     private String passwordRepeat;
 
 
