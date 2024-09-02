@@ -52,14 +52,14 @@ public class HairServiceController {
 
     @PostMapping("/hair_services/edit/{id}")
     public String updateHairService(@PathVariable("id") Long id, @ModelAttribute("hairService") HairService hairService) {
-        HairService existingReview = hairServiceRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Review not found or not authorized"));
+        HairService existingHairService = hairServiceRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Hair service not found"));
 
-        existingReview.setServiceName(hairService.getServiceName());
-        existingReview.setDescription(hairService.getDescription());
-        existingReview.setPrice(hairService.getPrice());
+        existingHairService.setServiceName(hairService.getServiceName());
+        existingHairService.setDescription(hairService.getDescription());
+        existingHairService.setPrice(hairService.getPrice());
 
-        hairServiceRepository.save(existingReview);
+        hairServiceRepository.save(existingHairService);
         return "redirect:/hairsalon";
     }
 
