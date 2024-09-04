@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   hairsalon:
-    build: .
+    build: target
     container_name: hairsalon
     image: hairsalon:latest
     environment:
